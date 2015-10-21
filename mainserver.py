@@ -7,14 +7,15 @@ import serial
 import time
 
 #Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate
-arduino = serial.Serial('/dev/cu.usbmodem1441', 9600)
-time.sleep(2)
+#arduino = serial.Serial('/dev/cu.usbmodem1441', 9600)
+#time.sleep(2)
 
 #if the connection is based in linux then uncomment this part 
-arduino = serial.Serial
+arduino = serial.Serial('/dev/ttyACM0', 9600)
+time.sleep(2)
 
 #Server Side
-class IphoneChat(Protocol):
+class Server(Protocol):
         command = " "
         def connectionMade(self):
             self.factory.clients.append(self)
@@ -82,11 +83,17 @@ class IphoneChat(Protocol):
 
 factory = Factory()
 factory.clients = []
-factory.protocol = IphoneChat
+factory.protocol = Server
 reactor.listenTCP(8000, factory)
 time.sleep(0.5)
 print("Darwin :server started")
 reactor.run()
+
+
+
+
+
+
 
 
 
