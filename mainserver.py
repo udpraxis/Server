@@ -10,6 +10,9 @@ import time
 arduino = serial.Serial('/dev/cu.usbmodem1441', 9600)
 time.sleep(2)
 
+#if the connection is based in linux then uncomment this part 
+arduino = serial.Serial
+
 #Server Side
 class IphoneChat(Protocol):
         command = " "
