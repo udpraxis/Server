@@ -123,12 +123,21 @@ class Server(Protocol):
         def device_send_msg(self):
             seq = []
 
+            if debugmode:
+                print("funtion to read the device transmitted data is running")
+
             for c in arduino.read():
                 seq.append(c)
 
                 if(c == '\n'):
                     self.message(seq)
+                    if debugmode:
+                        print()
+                        print("This is the data from the device")
+                        print(seq)
+                        print()
                     print(seq)
+                    seq = []
 
 
 
