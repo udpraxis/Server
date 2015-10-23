@@ -56,7 +56,6 @@ except:
 
 #Server Side
 class Server(Protocol):
-        command = " "
         def connectionMade(self):
             self.factory.clients.append(self)
             print(" clients are ", self.factory.clients)
@@ -120,7 +119,8 @@ class Server(Protocol):
             time.sleep(0.2)
             print(inByte)
 
-        def device_send_msg(self):
+class arduinomsg():
+     def device_send_msg(self):
             seq = []
 
             if debugmode:
@@ -141,6 +141,7 @@ class Server(Protocol):
 
 
 
+devicemsg = arduinomsg()
 
 factory = Factory()
 factory.clients = []
