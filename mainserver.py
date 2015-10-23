@@ -11,26 +11,36 @@ import time
 #time.sleep(2)
 
 debugmode = False
-
-print("Hello Im the Tcp Client")
-print(" please initialize certian parameters before running the server")
-print()
-x = input(" Setting the Server in debugmode? yes = y or no  = n")
-if x == "y" or "Y" :
-    debugmode = True
-elif x == "n" or "N":
-    debugmode = False
-else:
-    print("The answer is not acceptable")
+loop = True
+while loop:
+    print("Hello Im the Tcp Client")
+    print(" please initialize certian parameters before running the server")
+    print(" Setting the Server in debugmode? yes = y/Y or no  = n/N")
+    x = input()
+    print()
 
 
-print("Server is running in a debugging mode")
-print()
+
+
+    if x == 'y' or x == 'Y':
+        debugmode = True
+        print("Server is running in a debugging mode")
+        print(debugmode)
+        loop = False
+    elif x == 'n' or x == 'N':
+        debugmode = False
+        print("Server is in none debugging mode ")
+        loop = False
+    else:
+        print("The answer is not acceptable")
+
+
 time.sleep(1)
 
 
 
 #if the connection is based in linux then uncomment this part
+print()
 print("Initalizing Serial port...")
 try:
     arduino = serial.Serial('/dev/ttyACM0', 9600)
