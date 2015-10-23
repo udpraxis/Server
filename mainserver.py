@@ -10,9 +10,39 @@ import time
 #arduino = serial.Serial('/dev/cu.usbmodem1441', 9600)
 #time.sleep(2)
 
-#if the connection is based in linux then uncomment this part 
-arduino = serial.Serial('/dev/ttyACM0', 9600)
-time.sleep(2)
+debugmode = False
+
+print("Hello Im the Tcp Client")
+print(" please initialize certian parameters before running the server")
+print()
+x = input(" Setting the Server in debugmode? yes = y or no  = n")
+if x == "y" or "Y" :
+    debugmode = True
+elif x == "n" or "N":
+    debugmode = False
+else:
+    print("The answer is not acceptable")
+
+
+print("Server is running in a debugging mode")
+print()
+time.sleep(1)
+
+
+
+#if the connection is based in linux then uncomment this part
+print("Initalizing Serial port...")
+try:
+    arduino = serial.Serial('/dev/ttyACM0', 9600)
+    time.sleep(2)
+    print ("Arduino initialization Complete")
+    print()
+except:
+    print("The Arduino could not be connected!")
+    print("1.This could be due to another serialCommunication is busy with Arduino")
+    print("2.The Arduino is not connect to the given USB Port")
+    print()
+
 
 #Server Side
 class Server(Protocol):
@@ -79,6 +109,18 @@ class Server(Protocol):
             arduino.write(inByte)
             time.sleep(0.2)
             print(inByte)
+
+        def device_send_msg(self):
+            seq = []
+
+            for c in arduino.read():
+                seq.append(c)
+
+                if(c == '\n'):
+                    self.message(seq)
+                    print(seq)
+
+
 
 
 factory = Factory()
