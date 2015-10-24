@@ -6,12 +6,10 @@ import serial
 import time
 
 
-#Server Initialization code
+# Server Initialization code
 debugmode = False
 loop = True
-device_configured = bool
-configure_now = True
-device_connected = serial.Serial()
+device_configured = True
 
 while loop:
     print("Hello Im the Tcp Client")
@@ -36,41 +34,86 @@ time.sleep(1)
 
 print()
 
-while configure_now:
-    print("Connecting Device in serial port...")
-    try:
-        # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
-        device_connected = serial.Serial('/dev/cu.usbmodem1431', 9600, timeout=1) #timeout is important action
-        # time.sleep(2)
-        # arduino = serial.Serial('/dev/ttyACM0', 9600)
-        time.sleep(2)
-        print("Arduino initialization Complete")
-        device_configured = True
-        configure_now = False
-        print()
-    except:
-        print("The Arduino could not be connected!")
-        print("1.This could be due to another serialCommunication is busy with Arduino")
-        print("2.The Arduino is not connect to the given USB Port")
-        print()
 
-        #Configure Arduino later
-        print("Do you want to connect the device now?")
-        x_1 = input()
-        if x_1 == 'y' or x_1 == 'Y':
-            print("Connect the Device to the server")
+class deviceConnection():
+    def connectionConfigure(self, nameoftheport, baudrate=int, timeout=int):
+        configure_now = True
 
-            print("Reconnect by pressing c ")
-            connect_now = input()
-            if connect_now == 'c' or connect_now == 'C':
-                connect_now = True
+        while configure_now:
 
-        if x_1 == 'n' or x_1 == 'N':
-            device_configured = False
-            configure_now = False
+            print("Connecting Device in serial port...")
+            try:
+                # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
+                self.connected(nameoftheport,baudrate,timeout)
+                # time.sleep(2)
+                # arduino = serial.Serial('/dev/ttyACM0', 9600)
+                time.sleep(2)
+                print("Arduino initialization Complete")
+                return device_configured = True
+                configure_now = False
+                print()
+            except:
+                print("The Arduino could not be connected!")
+                print("1.This could be due to another serialCommunication is busy with Arduino")
+                print("2.The Arduino is not connect to the given USB Port")
+                print()
+
+                # Configure Arduino later
+                print("Do you want to connect the device now?")
+                x_1 = input()
+                if x_1 == 'y' or x_1 == 'Y':
+                    print("Connect the Device to the server")
+
+                    print("Reconnect by pressing c ")
+                    connect_now = input()
+                    if connect_now == 'c' or connect_now == 'C':
+                        pass
+
+                if x_1 == 'n' or x_1 == 'N':
+                    device_configured = False
+                    configure_now = False
+
+    print()
+
+    def connected(self, nameoftheport, baud, timeout):
+        return serial.Serial(nameoftheport, baud, timeout)
 
 
-print()
+# while configure_now:
+#     print("Connecting Device in serial port...")
+#     try:
+#         # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
+#         device_connected = serial.Serial('/dev/cu.usbmodem1431', 9600, timeout=1) #timeout is important action
+#         # time.sleep(2)
+#         # arduino = serial.Serial('/dev/ttyACM0', 9600)
+#         time.sleep(2)
+#         print("Arduino initialization Complete")
+#         device_configured = True
+#         configure_now = False
+#         print()
+#     except:
+#         print("The Arduino could not be connected!")
+#         print("1.This could be due to another serialCommunication is busy with Arduino")
+#         print("2.The Arduino is not connect to the given USB Port")
+#         print()
+#
+#         #Configure Arduino later
+#         print("Do you want to connect the device now?")
+#         x_1 = input()
+#         if x_1 == 'y' or x_1 == 'Y':
+#             print("Connect the Device to the server")
+#
+#             print("Reconnect by pressing c ")
+#             connect_now = input()
+#             if connect_now == 'c' or connect_now == 'C':
+#                 connect_now = True
+#
+#         if x_1 == 'n' or x_1 == 'N':
+#             device_configured = False
+#             configure_now = False
+#
+#
+# print()
 
 
 
@@ -109,8 +152,6 @@ class Server(Protocol):
             elif command == "configure":
                 pass
 
-
-
             for c in self.factory.clients:
                 c.message(msg)
 
@@ -118,8 +159,6 @@ class Server(Protocol):
         # the transmission is in byte
         byteMessage = str.encode(message)
         self.transport.write(byteMessage)
-
-
 
     def devicecommand(self, message):
         if device_configured:
@@ -150,8 +189,13 @@ class Server(Protocol):
             print("The Device is not properly configured")
             self.message("The Server is not configured properly to the server")
             print("Do you want to reconfigure the server to the device?")
-            #connectionDevice('/dev/cu.usbmodem1431', 9600, timeout=1)
-
+            nameoftheport = input("Name of the port ")
+            s_baudrate = input("What is the baudrate")
+            baudrate = s_baudrate.encode('utf-8')
+            print(int(baudrate))
+            s_timeout = input("What is the timeout?")
+            timeout = s_timeout.encode('utf-8')
+            print(int(timeout))
 
 
 class deviceConnected_sent_msg():
@@ -170,10 +214,9 @@ class deviceConnected_sent_msg():
         print(devicemsg_string)
 
 
-
-#def connectionDevice(name_of_the_USB,baudrate= int,timeout=int):
-    #device_connected= serial.Serial(name_of_the_USB,baudrate,time)
-
+port = '/dev/cu.usbmodem1431'
+baud = 9600
+timeout = 1
 
 factory = Factory()
 factory.clients = []
