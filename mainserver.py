@@ -11,7 +11,7 @@ debugmode = False
 loop = True
 device_configured = bool
 configure_now = True
-device_connected = serial.Serial()
+
 
 while loop:
     print("Hello Im the Tcp Client")
