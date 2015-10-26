@@ -41,7 +41,7 @@ while configure_now:
     try:
         # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
         #device_connected = serial.Serial('/dev/cu.usbmodem1431', 9600, timeout=1) #timeout is important action
-        arduino = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
+        device_connected = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
         time.sleep(2)
         print("Arduino initialization Complete")
         device_configured = True
