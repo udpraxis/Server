@@ -96,7 +96,7 @@ class Server(Protocol):
             msg = ""
             if command == "iam":
                 self.name = content
-                msg = self.name + " has joined "
+                msg = "success"
                 bytemsg = str.encode(msg)
 
             elif command == "msg":
