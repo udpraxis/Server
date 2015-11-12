@@ -6,6 +6,7 @@ import serial
 import time
 
 
+
 #Server Initialization code
 debugmode = False
 loop = True
@@ -40,7 +41,7 @@ while configure_now:
     print("Connecting Device in serial port...")
     try:
         # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
-        #device_connected = serial.Serial('/dev/cu.usbmodem1431', 9600, timeout=1) #timeout is important action
+        #device_connected = serial.Serial('/dev/cu.usbmodem1411', 9600, timeout=1) #timeout is important action
         device_connected = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
         time.sleep(2)
         print("Arduino initialization Complete")
@@ -82,76 +83,15 @@ class Server(Protocol):
     def connectionLost(self, reason):
         self.factory.clients.remove(self)
 
+    #This part deal with information recieved from Client
     def dataReceived(self, data):
-        decodedata = bytes.decode(data, 'utf-8')
-        a = decodedata.split(':')
+       print(data)
+       self.message(data)
 
-        if debugmode:
-            print(a)
-
-        if len(a) > 1:
-            command = a[0]
-            object  = a[1]
-
-
-            msg = ""
-            if command == "iam":
-                self.name = object
-                msg = "success"
-                bytemsg = str.encode(msg)
-
-            elif command == "command":
-                msg = self.name + " : " + object
-                print(msg)
-                bytemsg = str.encode(msg)
-                stringCommand = object
-                self.devicecommand(stringCommand)
-
-            elif command == "configure":
-                pass
-
-
-
-            for c in self.factory.clients:
-                c.message(msg)
 
     def message(self, message):
-        # the transmission is in byte
-        byteMessage = str.encode(message)
-        self.transport.write(byteMessage)
+        self.transport.write(message)
 
-
-
-    def devicecommand(self, message):
-        if device_configured:
-            devicemsg = deviceConnected_sent_msg()
-            msg = message
-            inByte = b''
-
-            if msg == "Red\r\n":
-                inByte = b'1\n'
-            elif msg == "NRed\r\n":
-                inByte = b'-1\n'
-            elif msg == "Blue\r\n":
-                inByte = b'2\n'
-            elif msg == "NBlue\r\n":
-                inByte = b'-2\n'
-            elif msg == "Green\r\n":
-                inByte = b'3\n'
-            elif msg == "NGreen\r\n":
-                inByte = b'-3\n'
-            else:
-                print("there is no command")
-
-            device_connected.write(inByte)
-            time.sleep(0.2)
-            devicemsg.device_send_msg()
-            time.sleep(.2)
-        else:
-            print("The Device is not properly configured")
-            self.message("The Server is not configured properly to the server")
-            print("Do you want to reconfigure the server to the device?")
-            #connectionDevice('/dev/cu.usbmodem1431', 9600, timeout=1)
 
 
 
@@ -171,9 +111,6 @@ class deviceConnected_sent_msg():
         print(devicemsg_string)
 
 
-
-#def connectionDevice(name_of_the_USB,baudrate= int,timeout=int):
-    #device_connected= serial.Serial(name_of_the_USB,baudrate,time)
 
 
 factory = Factory()
