@@ -42,7 +42,7 @@ while configure_now:
     try:
         # Initializing the arduino Connection in mac change /dev/cu.usbmodem1441 to apprioprate '/dev/cu.usbmodem1431'
         #device_connected = serial.Serial('/dev/cu.usbmodem1411', 9600, timeout=1) #timeout is important action
-        device_connected = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
+        device_connected = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
         time.sleep(2)
         print("Arduino initialization Complete")
         device_configured = True
@@ -86,7 +86,7 @@ class Server(Protocol):
     #This part deal with information recieved from Client
     def dataReceived(self, data):
        print(data)
-       self.message(data)
+       device_connected.write(data)
 
 
     def message(self, message):
